@@ -78,7 +78,12 @@ async function startScreenCapture() {
 
   // Show preview (mirrored via CSS transform)
   localVideo.srcObject = localStream;
-  previewPlaceholder.style.display = "none";
+        previewPlaceholder.style.display = "none";
+
+      // Warn if audio track not captured – ensure "Share audio" is enabled in the screen sharing dialog.
+      if (!localStream.getAudioTracks().length) {
+        console.warn("Audio track not captured – ensure 'Share audio' is enabled in the screen sharing dialog.");
+      }
 
   // Detect when user clicks the browser's built-in "Stop Sharing" button
   localStream.getVideoTracks()[0].addEventListener("ended", () => {
