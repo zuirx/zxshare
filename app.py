@@ -279,7 +279,7 @@ def on_ice_candidate(payload: dict):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 8555))
     debug = os.environ.get("FLASK_DEBUG", "1") == "1"
     print(f"\n[*] zuirx share running at http://localhost:{port}\n")
     socketio.run(app, host="0.0.0.0", port=port, debug=debug, use_reloader=False, allow_unsafe_werkzeug=True)
