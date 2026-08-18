@@ -720,9 +720,38 @@ code {
   border-top: 1px solid var(--color-border);
 }
 
-/* ══════════════════════════════════════════════════════════════
-   RESPONSIVE
-   ══════════════════════════════════════════════════════════════ */
+/* Multi‑view grid and items */
+.multiview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.multiview-item {
+  position: relative;
+  background: #000;
+}
+
+.multiview-item .remote-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.multiview-item .remove-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: var(--color-yellow);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
 @media (max-width: 900px) {
   .share-layout {
     grid-template-columns: 1fr;

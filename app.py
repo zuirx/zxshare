@@ -69,6 +69,12 @@ def view(session_id: str):
     return render_template("view.html", session_id=session_id)
 
 
+@app.route("/multiview")
+def multiview():
+    """Render the multi‑session viewer page."""
+    return render_template("multiview.html")
+
+
 @app.route("/api/create-session", methods=["POST"])
 def create_session():
     """Generate a cryptographically random session ID and register it."""

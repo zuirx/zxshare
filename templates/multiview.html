@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Multi‑Live View — zuirx share{% endblock %}
+{% block content %}
+<main class="multiview-page">
+  <section class="add-stream">
+    <input id="session-id-input" type="text" placeholder="Enter session ID" aria-label="Session ID" />
+    <button id="btn-add-stream" class="btn btn--primary">Add stream</button>
+  </section>
+  <div id="multiview-grid" class="multiview-grid"></div>
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/multiview.js') }}"></script>
+{% endblock %}
