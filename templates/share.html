@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Compartilhando — zuirx share{% endblock %}
+{% block meta_description %}Você está compartilhando sua tela via zuirx share. Envie o link para seus espectadores.{% endblock %}
+
+{% block content %}
+<main class="share-page">
+  <!-- Header bar -->
+  <header class="share-header">
+    <a href="/" class="brand brand--sm">
+      zuirx <span class="brand__accent">share</span>
+    </a>
+    <div id="status-badge" class="status-badge status-badge--connecting">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span id="status-text">Inicializando…</span>
+    </div>
+  </header>
+
+  <div class="share-layout">
+    <!-- Preview column -->
+    <section class="share-preview-col" aria-label="Preview da tela compartilhada">
+      <div class="preview-card card">
+        <div class="preview-card__header">
+          <span class="preview-card__title">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="icon-sm"><path d="M2 4a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4z"/><path d="M6 18h8M10 14v4"/></svg>
+            Preview
+          </span>
+          <span id="viewer-count-badge" class="viewer-badge">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="icon-sm"><path d="M10 12a3 3 0 100-6 3 3 0 000 6z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+            <span id="viewer-count">0</span> espectador(es)
+          </span>
+        </div>
+        <div class="preview-card__video-wrap">
+          <video id="local-video" class="preview-video" autoplay muted playsinline aria-label="Preview da sua tela compartilhada"></video>
+          <div id="preview-placeholder" class="preview-placeholder">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4" y="8" width="40" height="28" rx="4"/><path d="M16 36l4 4h8l4-4"/><circle cx="24" cy="22" r="6"/></svg>
+            <p>Aguardando permissão de tela…</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info column -->
+    <aside class="share-info-col">
+      <!-- Session link card -->
+      <div class="card link-card">
+        <h2 class="card__title">
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="icon-sm"><path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"/></svg>
+          Link de compartilhamento
+        </h2>
+        <p class="card__sub">Envie este link para quem deseja assistir à sua tela:</p>
+        <div class="link-display" role="group" aria-label="Link de visualização">
+          <input
+            id="share-link-input"
+            class="link-input"
+            type="text"
+            readonly
+            aria-label="Link de compartilhamento"
+            value="{{ request.host_url }}view/{{ session_id }}"
+          />
+          <button id="btn-copy-link" class="btn btn--secondary btn--icon" aria-label="Copiar link" title="Copiar link">
+            <svg id="icon-copy" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/></svg>
+            <svg id="icon-check" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="hidden"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          </button>
+        </div>
+        <p id="copy-feedback" class="copy-feedback" hidden aria-live="polite">Link copiado!</p>
+      </div>
+
+      <!-- Session info card -->
+      <div class="card info-card">
+        <h2 class="card__title">
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="icon-sm"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+          Detalhes da sessão
+        </h2>
+        <dl class="info-list">
+          <dt>ID da sessão</dt>
+          <dd><code class="session-id-code">{{ session_id }}</code></dd>
+          <dt>Início</dt>
+          <dd id="session-start-time">—</dd>
+          <dt>Espectadores</dt>
+          <dd id="session-viewer-count">0</dd>
+        </dl>
+      </div>
+
+      <!-- Stop button -->
+      <button id="btn-stop-share" class="btn btn--danger btn--full" aria-label="Parar compartilhamento">
+        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="icon-sm"><rect x="4" y="4" width="12" height="12" rx="2"/></svg>
+        Parar compartilhamento
+      </button>
+
+      <!-- Tips -->
+      <div class="tips-card card">
+        <p class="tips-card__title">💡 Dicas</p>
+        <ul class="tips-list">
+          <li>Compartilhe apenas o que for necessário.</li>
+          <li>O vídeo viaja P2P — o servidor não intercepta.</li>
+          <li>Clique em "Parar" para encerrar a sessão.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>const SESSION_ID = "{{ session_id }}";</script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/share.js') }}"></script>
+{% endblock %}

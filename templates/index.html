@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}zuirx share — Compartilhamento de Tela em Tempo Real{% endblock %}
+
+{% block content %}
+<main class="hero">
+  <div class="hero__content">
+    <!-- Logo / Brand -->
+    <div class="brand">
+      <div class="brand__icon" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="8" width="40" height="28" stroke="currentColor" stroke-width="3"/>
+          <path d="M16 36l4 4h8l4-4" stroke="currentColor" stroke-width="3"/>
+          <circle cx="35" cy="15" r="4" fill="currentColor"/>
+        </svg>
+      </div>
+      <h1 class="brand__name">zuirx <span class="brand__accent">share</span></h1>
+    </div>
+
+    <p class="hero__tagline">
+      Compartilhe sua tela instantaneamente.<br/>
+      <span class="hero__tagline--sub">Sem instalação. Sem cadastro. Apenas um link.</span>
+    </p>
+
+    <!-- Feature pills -->
+    <div class="feature-pills" aria-label="Características">
+      <span class="pill">
+        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        P2P via WebRTC
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        Tempo real
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        Link único
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        Múltiplos espectadores
+      </span>
+    </div>
+
+    <!-- CTA -->
+    <button id="btn-start-share" class="btn btn--primary btn--xl" aria-label="Compartilhar minha tela">
+      <span class="btn__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <path d="M8 21h8M12 17v4"/>
+          <circle cx="17" cy="7" r="2.5" fill="currentColor" stroke="none" class="pulse-dot"/>
+        </svg>
+      </span>
+      Compartilhar minha tela
+    </button>
+
+    <p id="share-error" class="error-msg" role="alert" hidden></p>
+
+    <!-- How it works -->
+    <div class="how-it-works">
+      <div class="step">
+        <div class="step__num">1</div>
+        <p>Clique em <strong>Compartilhar</strong> e escolha o que deseja mostrar</p>
+      </div>
+      <div class="step__arrow" aria-hidden="true">→</div>
+      <div class="step">
+        <div class="step__num">2</div>
+        <p>Copie o <strong>link gerado</strong> e envie para quem quiser</p>
+      </div>
+      <div class="step__arrow" aria-hidden="true">→</div>
+      <div class="step">
+        <div class="step__num">3</div>
+        <p>O espectador abre o link e vê sua tela <strong>em tempo real</strong></p>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const btn = document.getElementById("btn-start-share");
+  const errEl = document.getElementById("share-error");
+
+  btn.addEventListener("click", async () => {
+    btn.disabled = true;
+    btn.textContent = "Criando sessão…";
+    errEl.hidden = true;
+
+    try {
+      const res = await fetch("/api/create-session", { method: "POST" });
+      if (!res.ok) throw new Error("Falha ao criar sessão no servidor");
+      const { session_id } = await res.json();
+      window.location.href = `/share/${session_id}`;
+    } catch (err) {
+      errEl.textContent = `Erro: ${err.message}`;
+      errEl.hidden = false;
+      btn.disabled = false;
+      btn.innerHTML = `<span class="btn__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+        </svg>
+      </span> Compartilhar minha tela`;
+
+      if (window.showErrorModal) {
+        window.showErrorModal(
+          "Erro ao Criar Sessão",
+          "Não foi possível registrar uma nova sessão de compartilhamento de tela no servidor.",
+          err
+        );
+      }
+    }
+  });
+</script>
+{% endblock %}

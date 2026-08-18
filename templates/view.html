@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Assistindo — zuirx share{% endblock %}
+{% block meta_description %}Visualize a tela compartilhada em tempo real via zuirx share.{% endblock %}
+
+{% block content %}
+<main class="view-page" aria-label="Visualização de tela compartilhada">
+  <!-- Overlay states — JS controls which one is visible -->
+  <div id="overlay-connecting" class="overlay overlay--active" role="status" aria-live="polite">
+    <div class="overlay__card">
+      <div class="spinner" aria-hidden="true"></div>
+      <p class="overlay__title">Conectando…</p>
+      <p class="overlay__sub">Aguardando o compartilhador iniciar a transmissão.</p>
+    </div>
+  </div>
+
+  <div id="overlay-not-found" class="overlay" role="alert" hidden>
+    <div class="overlay__card">
+      <div class="overlay__icon overlay__icon--warn" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="24" r="20"/><path d="M24 14v12M24 34h.01" stroke-linecap="round"/></svg>
+      </div>
+      <p class="overlay__title">Sessão não encontrada</p>
+      <p class="overlay__sub">O link que você acessou não corresponde a nenhuma sessão ativa.</p>
+      <a href="/" class="btn btn--primary">Criar novo compartilhamento</a>
+    </div>
+  </div>
+
+  <div id="overlay-ended" class="overlay" role="alert" hidden>
+    <div class="overlay__card">
+      <div class="overlay__icon overlay__icon--info" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="12" width="32" height="22" rx="3"/><path d="M18 34l3 4h6l3-4"/><path d="M16 20l-4-4m0 0l4-4m-4 4h8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <p class="overlay__title">Compartilhamento encerrado</p>
+      <p class="overlay__sub">O usuário parou de compartilhar a tela.</p>
+      <a href="/" class="btn btn--primary">Voltar ao início</a>
+    </div>
+  </div>
+
+  <!-- Video player (hidden until stream arrives) -->
+  <div id="video-wrap" class="video-wrap" hidden>
+    <video id="remote-video" class="remote-video" autoplay playsinline aria-label="Tela compartilhada em tempo real"></video>
+
+    <!-- Floating HUD -->
+    <div class="video-hud">
+      <a href="/" class="brand brand--sm brand--hud">zuirx <span class="brand__accent">share</span></a>
+      <div class="hud-badges">
+        <span class="live-badge" aria-label="Ao vivo">
+          <span class="live-dot" aria-hidden="true"></span>
+          AO VIVO
+        </span>
+        <button id="btn-fullscreen" class="btn btn--ghost btn--icon" aria-label="Tela cheia" title="Tela cheia">
+          <svg id="icon-expand" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+          <svg id="icon-compress" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="hidden"><path fill-rule="evenodd" d="M5 9A1 1 0 015 7h1.586L4.293 4.707a1 1 0 011.414-1.414L8 5.586V4a1 1 0 112 0v4a1 1 0 01-1 1H5zm10-2a1 1 0 110 2h-1.586l2.293 2.293a1 1 0 11-1.414 1.414L12 10.414V12a1 1 0 11-2 0V8a1 1 0 011-1h4zM5 11a1 1 0 011 1v1.586l2.293-2.293a1 1 0 111.414 1.414L7.414 15H9a1 1 0 110 2H5a1 1 0 01-1-1v-4a1 1 0 011-1zm10 3a1 1 0 11-2 0v-1.586l-2.293 2.293a1 1 0 11-1.414-1.414L12.586 13H11a1 1 0 110-2h4a1 1 0 011 1v4z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>const SESSION_ID = "{{ session_id }}";</script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/view.js') }}"></script>
+{% endblock %}
